@@ -18,13 +18,19 @@ class PostListView(ListView):
     template_name = 'blog/home.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
+    # paginate_by = 2
 
 class PostDetailView(DetailView):
     model = Post
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class PostCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Post
     fields = ['title', 'content']
+    success_message = "Your post has been Created!"
+
+    def update(self, request, *args, **kwargs):
+        messages.warning(self.request, self.success_message)
+        return super(PostUpdateView, self).update(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -33,7 +39,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Post
     fields = ['title', 'content']
-    success_message = "Your post has been Updated"
+    success_message = "Your post has been Updated!"
 
     def update(self, request, *args, **kwargs):
         messages.warning(self.request, self.success_message)
@@ -53,7 +59,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
     model = Post
     success_url = '/'
-    success_message = "Your post has been deleted"
+    success_message = "Your post has been Deleted!"
 
     def delete(self, request, *args, **kwargs):
         messages.warning(self.request, self.success_message)
