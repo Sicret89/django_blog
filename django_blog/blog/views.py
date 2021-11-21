@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import DeleteView
-# from django.contrib import messages
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from .models import Post
 
 
@@ -29,9 +30,14 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Post
     fields = ['title', 'content']
+    success_message = "Your post has been Updated"
+
+    def update(self, request, *args, **kwargs):
+        messages.warning(self.request, self.success_message)
+        return super(PostUpdateView, self).update(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -44,9 +50,14 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         else:
             return False
 
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
     model = Post
     success_url = '/'
+    success_message = "Your post has been deleted"
+
+    def delete(self, request, *args, **kwargs):
+        messages.warning(self.request, self.success_message)
+        return super(PostDeleteView, self).delete(request, *args, **kwargs)
 
     def test_func(self):
         post = self.get_object()
