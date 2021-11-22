@@ -28,7 +28,7 @@ class PostCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     fields = ['title', 'content']
     success_message = "Your post has been Created!"
 
-    def update(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         messages.warning(self.request, self.success_message)
         return super(PostUpdateView, self).update(request, *args, **kwargs)
 
