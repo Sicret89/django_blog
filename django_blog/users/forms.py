@@ -7,6 +7,11 @@ from .models import Profile
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
 
+    def clean_email(self):
+        if User.objects.filter(email=self.cleaned_data['email']).exists():
+            raise forms.ValidationError("the given email is already registered")
+        return self.cleaned_data['email']
+
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
