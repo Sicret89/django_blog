@@ -9,7 +9,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = str(os.environ.get('DEBUG')) == '1' # 1 == True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mydjangoblogapp00.herokuapp.com']
 if not DEBUG:
     ALLOWED_HOSTS += [os.environ.get('ALLOWED_HOSTS')]
 
