@@ -25,9 +25,13 @@ class UserUpdateForm(forms.ModelForm):
         fields = ['username', 'email']
 
     def clean_email(self):
-        if User.objects.filter(email=self.cleaned_data['email']).exists():
-            raise forms.ValidationError("The given email is already registered")
-        return self.cleaned_data['email']
+        email = self.cleaned_data["email"]
+        qs = User.objects.filter(email__iexact=email)
+        if self.initial.get("email") == email:
+            return email
+        if not qs.exists():
+            return email
+        raise forms.ValidationError(f'Sorry email address: {email} is already registered. Please try different email.')
 
 
 class ProfileUpdateForm(forms.ModelForm):
